@@ -104,7 +104,7 @@ class Playground extends Component {
     return (
       <div>
         <div style={styles.controls}>
-          <div style={{marginRight: 'auto', display: 'flex', flexWrap: 'wrap' }}>
+          <div style={{ marginRight: 'auto', display: 'flex', flexWrap: 'wrap' }}>
             {configChildren}
           </div>
           <Action color="red" name="Reset" action={this.reset}/>

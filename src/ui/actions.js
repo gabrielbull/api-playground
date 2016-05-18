@@ -74,7 +74,8 @@ class Actions extends Component {
   onSuccess = (action) => {
     let param;
     if (action) {
-      const { type, ...params } = action;
+      let { ...params } = action;
+      delete params.type;
       let count = 0;
       for (var prop in params) {
         if (params.hasOwnProperty(prop)) {

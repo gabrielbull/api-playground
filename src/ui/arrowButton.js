@@ -10,7 +10,7 @@ class ArrowButton extends Component {
 
   toggle = () => {
     this.props.onClick(!this.state.expanded);
-    this.setState({expanded: !this.state.expanded});
+    this.setState({ expanded: !this.state.expanded });
   };
 
   render() {

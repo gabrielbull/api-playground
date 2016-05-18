@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import JsonViewer from '../ui/json-viewer';
+import JsonViewer from '../ui/jsonViewer';
 
 class StateView extends Component {
   constructor(...args) {
@@ -7,14 +7,9 @@ class StateView extends Component {
   }
 
   render() {
-    let result;
-    try {
-      result = this.props.result ? JSON.parse(this.props.result) : null;
-    } catch (err) {
-    }
-    const viewer = result ? <JsonViewer json={result}/> : '';
+    const viewer = this.props.state ? <JsonViewer json={this.props.state}/> : '';
     return (
-      <div style={{marginTop: '8px', marginLeft: '32px'}}>
+      <div style={{ marginTop: '8px', marginLeft: '32px' }}>
         <span
           style={{
             fontSize: '11px',
@@ -22,7 +17,7 @@ class StateView extends Component {
             textTransform: 'uppercase'
           }}
         >
-          Response
+          State
         </span>
         {viewer}
       </div>

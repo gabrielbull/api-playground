@@ -1,4 +1,3 @@
-import { dispatch } from '../../src/app';
 import React, { Component, PropTypes } from 'react';
 
 class ActionsView extends Component {
@@ -63,15 +62,17 @@ class ActionsView extends Component {
       actionResult: null
     });
 
-    dispatch(action(this.getData()))
+    console.log(action);
+    /*dispatch(action(this.getData()))
       .then(this.onSuccess)
-      .catch(this.onError)
+      .catch(this.onError)*/
   }
 
   onSuccess = (action) => {
     let param;
     if (action) {
-      const { type, ...params } = action;
+      const { ...params } = action;
+      delete params.type;
       let count = 0;
       for (var prop in params) {
         if (params.hasOwnProperty(prop)) {

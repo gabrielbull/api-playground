@@ -1,12 +1,11 @@
-import Logger from './redux-store';
 import React, { Component, PropTypes } from 'react';
-import HeaderView from './views/header-view';
+import HeaderView from './views/headerView';
 import { functionName } from './helper';
-import RequestView from './views/request-view';
-import FieldsView from './views/fields-view';
-import ResultView from './views/result-view';
+import RequestView from './views/requestView';
+import StateView from './views/stateView';
+import ResultView from './views/resultView';
 
-class RequestComponent extends Component {
+class StateComponent extends Component {
   static contextTypes = {
     store: PropTypes.object
   };
@@ -16,8 +15,8 @@ class RequestComponent extends Component {
     expanded: PropTypes.bool
   };
 
-  constructor() {
-    super();
+  constructor(props, context, updater) {
+    super(props, context, updater);
     try {
       this.state = JSON.parse(localStorage['component-state-' + functionName(this.constructor)]);
     } catch (err) {
@@ -28,7 +27,19 @@ class RequestComponent extends Component {
         error: null
       };
     }
-    Logger.dispatcherCallbacks = [...Logger.dispatcherCallbacks, this.dispatcherCallback];
+    context.store.subscribe(() =>
+      this.setState({
+        state: this.getReduxState()
+      })
+    );
+    //Logger.dispatcherCallbacks = [...Logger.dispatcherCallbacks, this.dispatcherCallback];
+  }
+
+  getChildContext() {
+    return {
+      component: this,
+      expanded: this.state.expanded
+    };
   }
 
   dispatcherCallback = (action) => {
@@ -43,22 +54,22 @@ class RequestComponent extends Component {
     localStorage['component-state-' + functionName(this.constructor)] = JSON.stringify(this.state);
   }
 
-  getChildContext() {
-    return {
-      component: this,
-      expanded: this.state.expanded
-    };
+  getReduxState() {
+    const states = this.context.store.getState();
+    const stateName = functionName(this.constructor).replace(/([A-Z])/g, function (g) {
+      return `_${g.toLowerCase()}`;
+    }).replace(/^_/, '');
+    return states[stateName] || null;
   }
 
   render() {
-    const fields = this.constructor.fields ? <FieldsView state={this.state} fields={this.constructor.fields}/> : '';
     const result = this.state.actionResult ? <ResultView result={this.state.actionResult}/> : '';
 
     let content;
     if (this.state.expanded) {
       content = (
         <div>
-          {fields}
+          <StateView state={this.state.state}/>
           {result}
         </div>
       );
@@ -77,8 +88,9 @@ class RequestComponent extends Component {
           error={this.state.error}
           loading={this.state.loading}
           action={this.state.action}
+          state={this.state.state}
         >
-          <RequestView actions={this.constructor.actions} fields={this.constructor.fields}/>
+          <RequestView actions={this.constructor.actions} callbacks={this.constructor.callbacks}/>
         </HeaderView>
         {content}
       </div>
@@ -86,4 +98,4 @@ class RequestComponent extends Component {
   }
 }
 
-export default RequestComponent;
+export default StateComponent;

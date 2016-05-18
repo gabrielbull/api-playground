@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import ArrowButton from '../ui/arrow-button';
-import ErrorView from './error-view';
-import ActionView from './action-view';
-import StateInfoView from './state-info-view';
+import ArrowButton from '../ui/arrowButton';
+import ErrorView from './errorView';
+import ActionView from './actionView';
+import StateInfoView from './stateInfoView';
 import Loader from '../ui/loader';
 
 class HeaderView extends Component {
@@ -16,7 +16,7 @@ class HeaderView extends Component {
   }
 
   toggleExpanded = (value) => {
-    this.context.component.setState({expanded: value});
+    this.context.component.setState({ expanded: value });
   };
 
   render() {
@@ -57,15 +57,15 @@ class HeaderView extends Component {
             height: '20px'
           }}
         >
-          <ArrowButton expanded={this.context.expanded} onClick={this.toggleExpanded} style={{marginRight: '20px'}}/>
-          <span style={{marginRight: '12px'}}>
+          <ArrowButton expanded={this.context.expanded} onClick={this.toggleExpanded} style={{ marginRight: '20px' }}/>
+          <span style={{ marginRight: '12px' }}>
             {this.props.name}
           </span>
           {this.props.children}
-          <span style={{marginRight: '12px'}}>
+          <span style={{ marginRight: '12px' }}>
             {action}
           </span>
-          <span style={{marginRight: '12px'}}>
+          <span style={{ marginRight: '12px' }}>
             {state}
           </span>
         </div>

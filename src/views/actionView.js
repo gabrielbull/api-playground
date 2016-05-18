@@ -7,7 +7,7 @@ class ActionView extends Component {
 
   render() {
     return (
-      <span style={{color: '#ffc600'}}>
+      <span style={{ color: '#ffc600' }}>
         {this.props.action.type}
       </span>
     );

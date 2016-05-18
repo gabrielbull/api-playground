@@ -51,8 +51,8 @@ class Param extends Component {
 
   render() {
     const { onChange } = this.props;
-    let componentStyle = {...styles.container};
-    let labelStyle = {...styles.label};
+    let componentStyle = { ...styles.container };
+    let labelStyle = { ...styles.label };
 
     let onClick;
     if (onChange) {

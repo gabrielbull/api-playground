@@ -7,8 +7,8 @@ class ErrorView extends Component {
 
   render() {
     return (
-      <div style={{display: 'flex', alignItems: 'center', color: 'red', marginLeft: '20px'}}>
-        <svg x="0px" y="0px" viewBox="0 0 12 12" style={{width: '12px', height: '12px', marginRight: '12px'}}>
+      <div style={{ display: 'flex', alignItems: 'center', color: 'red', marginLeft: '20px' }}>
+        <svg x="0px" y="0px" viewBox="0 0 12 12" style={{ width: '12px', height: '12px', marginRight: '12px' }}>
           <path
             fill="red"
             d="M11.7,0.3c-0.4-0.4-1-0.4-1.4,0L6,4.6L1.7,0.3c-0.4-0.4-1-0.4-1.4,0c-0.4,0.4-0.4,1,0,1.4L4.6,6l-4.3,4.3

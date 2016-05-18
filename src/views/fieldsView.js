@@ -41,12 +41,12 @@ class FieldsView extends Component {
 
   renderField(name, type, value) {
     if (value === null || typeof value === 'undefined') {
-      value = <span style={{color: 'gray'}}>null</span>;
+      value = <span style={{ color: 'gray' }}>null</span>;
     } else {
       if (type === 'password') {
         value = value.replace(/./g, '*');
       }
-      value = <span style={{color: 'white'}}>{value}</span>;
+      value = <span style={{ color: 'white' }}>{value}</span>;
     }
 
     return (
@@ -64,7 +64,7 @@ class FieldsView extends Component {
         }}
         onClick={this.changeValue.bind(this, name)}
       >
-        <span style={{color: 'gray', marginRight: '6px'}}>
+        <span style={{ color: 'gray', marginRight: '6px' }}>
           {name}:
         </span>
         {value}

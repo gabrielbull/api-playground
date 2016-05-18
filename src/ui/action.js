@@ -32,7 +32,7 @@ class Action extends Component {
 
   render() {
     const { name, color, action } = this.props;
-    let componentStyle = {...styles.button};
+    let componentStyle = { ...styles.button };
 
     if (color) {
       componentStyle = {

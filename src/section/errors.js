@@ -12,7 +12,7 @@ const styles = {
 
 class Errors extends Component {
   render() {
-    const { style, ...props } = this.props;
+    const { style } = this.props;
 
     let errors = '';
     for (const error of Object.keys(this.props.errors)) {
@@ -20,7 +20,7 @@ class Errors extends Component {
     }
     errors = errors.substr(0, errors.length - 2);
 
-    let componentStyle = {...styles.message, ...style};
+    let componentStyle = { ...styles.message, ...style };
 
     return (
       <div style={componentStyle}>

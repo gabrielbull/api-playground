@@ -45,17 +45,17 @@ class Field extends Component {
   };
 
   render() {
-    let { value, type, name, ...props } = this.props;
+    let { value, type, name } = this.props;
 
     value = this.state.value;
 
     if (value === null || typeof value === 'undefined') {
-      value = <span style={{color: 'gray'}}>null</span>;
+      value = <span style={{ color: 'gray' }}>null</span>;
     } else {
       if (type === 'password') {
         value = value.replace(/./g, '*');
       }
-      value = <span style={{color: 'white'}}>{value}</span>;
+      value = <span style={{ color: 'white' }}>{value}</span>;
     }
 
     return (
@@ -63,7 +63,7 @@ class Field extends Component {
         style={styles}
         onClick={this.changeValue}
       >
-        <span style={{color: 'gray', marginRight: '6px'}}>
+        <span style={{ color: 'gray', marginRight: '6px' }}>
           {name}:
         </span>
         {value}

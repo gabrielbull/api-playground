@@ -7,7 +7,7 @@ class StateInfoView extends Component {
 
   render() {
     return (
-      <span style={{color: this.props.type === 'Object' ? '#A1C659' : '#D381C3'}}>
+      <span style={{ color: this.props.type === 'Object' ? '#A1C659' : '#D381C3' }}>
         {this.props.type}
         ({this.props.count})
       </span>

@@ -47,7 +47,7 @@ class Items extends Component {
   };
 
   render() {
-    const { items, showTotals, show, ...actions } = this.props;
+    const { items, showTotals, ...actions } = this.props;
     let children = [];
 
     if (items) {
@@ -76,14 +76,14 @@ class Items extends Component {
 
   renderHeader() {
     if (typeof this.props.items !== 'undefined' && typeof this.props.items[0] !== 'undefined') {
-      let children = [<td style={{...styles.theadTd, width: '50px'}} key="index">index</td>];
+      let children = [<td style={{ ...styles.theadTd, width: '50px' }} key="index">index</td>];
       for (const prop of Object.keys(this.props.items[0])) {
         if (this.props.show && this.props.show.indexOf(prop) === -1) {
           continue;
         }
         children.push(<td style={styles.theadTd} key={prop}>{prop}</td>);
       }
-      children.push(<td style={{...styles.theadTd, width: '10px'}} key="actions"/>);
+      children.push(<td style={{ ...styles.theadTd, width: '10px' }} key="actions"/>);
       return <tr>{children}</tr>;
     }
     return null;
@@ -117,7 +117,7 @@ class Items extends Component {
     }
 
     return (
-      <td style={{...styles.tbodyTd, width: '10px', whiteSpace: 'nowrap'}} key="actions">
+      <td style={{ ...styles.tbodyTd, width: '10px', whiteSpace: 'nowrap' }} key="actions">
         {children}
       </td>
     );

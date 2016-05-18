@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { functionName } from './helper';
-import HeaderView from './views/header-view';
+import HeaderView from './views/headerView';
 import Actions from './ui/actions';
 
 const styles = {
