@@ -1,7 +1,7 @@
 {
   "name": "api-playground",
   "main": "lib/index.js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "dependencies": {
     "react": "^15.0.2",
     "react-json-tree": "^0.7.4",

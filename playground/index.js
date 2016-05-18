@@ -22,6 +22,3 @@ ReactDOM.render((
     </Playground>
   </AppContainer>
 ), document.getElementById('main'));
-
-
-//      <MyComponentExample/>

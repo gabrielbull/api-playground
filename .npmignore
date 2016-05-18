@@ -3,8 +3,11 @@
 /.editorconfig
 /.eslintrc
 /.idea
+/.travis.yml
+/.npmignore
 /node_modules
 /test
 /npm-debug.log
 /webpack.config.js
 /src
+/playground
