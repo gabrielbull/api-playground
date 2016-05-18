@@ -1,38 +1,5 @@
-# API Playground
-
-Components to create playgrounds for APIs easily.
-
-## Example Playground
-
-```jsx
-import React  from 'react';
-import ReactDOM from 'react-dom';
-import { compose, applyMiddleware, createStore } from 'redux';
-import { logger, Playground } from 'api-playground';
-import MyComponentExample from './myComponentExample';
-
-let reduxStore = createStore(e => e, {}, compose(
-  applyMiddleware(logger)
-));
-
-let config = { example: 'hello' };
-
-ReactDOM.render((
-  <Playground
-    store={reduxStore}
-    getConfig={config}
-    changeConfig={(key, value) => config[key] = value}
-  >
-    <MyComponentExample/>
-  </Playground>
-), document.getElementById('main'));
-```
-
-## Example Component
-
-```jsx
 import React, { PropTypes, Component } from 'react';
-import { PlaygroundComponent, View, Section, Ui } from 'api-playground';
+import { PlaygroundComponent, View, Section, Ui } from '../src/index';
 
 @PlaygroundComponent
 class MyComponentExample extends Component {
@@ -42,6 +9,10 @@ class MyComponentExample extends Component {
 
   static subscribe = 'reduxStateKey';
 
+  showAddItemModal = () => {
+    this.refs.modal.setState({ isOpen: true });
+  };
+
   addItem = (value) => {
     this.refs.modal.setState({ isOpen: false });
   };
@@ -50,7 +21,7 @@ class MyComponentExample extends Component {
   };
 
   actions = {
-    addItem: this.addItem,
+    addItem: this.showAddItemModal,
     removeItem: this.removeItem
   };
 
@@ -59,11 +30,11 @@ class MyComponentExample extends Component {
       <View>
         <Section.Items
           showTotals={['quantity']}
-          items={this.state}
+          items={this.state.reduxStateKey}
           removeItem={this.removeItem}
         />
         <Section>
-          <Section.Param name="Quantity" value={this.state.length}/>
+          <Section.Param name="Quantity" value={this.state.reduxStateKey.length}/>
         </Section>
         <Section>
           <Section.Request ref="request"/>
@@ -81,4 +52,3 @@ class MyComponentExample extends Component {
 }
 
 export default MyComponentExample;
-```

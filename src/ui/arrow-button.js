@@ -19,8 +19,8 @@ class ArrowButton extends Component {
         onClick={this.toggle}
         style={{
           display: 'block',
-          width: '0',
-          height: '0',
+          width: '0px',
+          height: '0px',
           borderBottom: '1px solid gray',
           border: 'solid transparent',
           borderColor: 'rgba(136, 183, 213, 0)',

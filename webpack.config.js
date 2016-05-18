@@ -1,35 +1,27 @@
-import path from 'path';
-import webpack from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-
-const DEV = process.env['PROD_DEV'] && process.env['PROD_DEV'] != '0' ? true : false;
+var path = require('path');
+var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    index: './src/index.js',
-    ...(DEV && { playground: [ './server/playground.js'] })
+    app: ['react-hot-loader/patch', 'webpack/hot/dev-server', './playground/index.js']
   },
 
   output: {
     path: path.join(__dirname, 'lib'),
-    filename: '[name].js',
-    publicPath: 'http://localhost:3010/'
+    filename: '[name].js'
   },
 
-  devServer: {
-    contentBase: './'
-  },
-
-  devtool: DEV ? 'source-map' : false,
+  devtool: 'source-map',
 
   module: {
-    preLoaders: [
+    /*preLoaders: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'eslint'
       }
-    ],
+    ],*/
     loaders: [
       {
         test: /\.(js)$/,
@@ -41,14 +33,7 @@ module.exports = {
 
   plugins: [
     new webpack.NoErrorsPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('development')
-      }
-    }),
-    ...(DEV && [
-      new HtmlWebpackPlugin()
-    ])
+    new HtmlWebpackPlugin()
   ],
 
   eslint: {

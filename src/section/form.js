@@ -94,7 +94,7 @@ class Form extends Component {
           <td>
             <input
               style={styles.input}
-              value={state && typeof state[prop] !== 'undefined' ? state[prop] : null}
+              value={state && typeof state[prop] !== 'undefined' ? state[prop] : ''}
               onChange={this.onChange.bind(this, prop)}
               placeholder={defaults[prop] === null ? 'NULL' : defaults[prop]}
             />

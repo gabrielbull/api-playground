@@ -25,7 +25,7 @@ const styles = {
     overflow: 'auto',
     WebkitOverflowScrolling: 'touch',
     outline: 'none',
-    padding: '0',
+    padding: '0px',
     marginTop: '40px',
     marginBottom: 'auto'
   }
