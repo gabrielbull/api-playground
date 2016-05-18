@@ -1,0 +1,10 @@
+/.babelrc
+/.codeclimate.yml
+/.editorconfig
+/.eslintrc
+/.idea
+/node_modules
+/test
+/npm-debug.log
+/webpack.config.js
+/src
