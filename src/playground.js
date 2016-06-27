@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import './request/network';
 import Field from './ui/field';
 import Action from './ui/action';
 

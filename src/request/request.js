@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import addXMLRequestCallback from './network';
+import { addRequestListener, removeRequestListener } from './network';
 
 class Request extends Component {
   static propTypes = {
@@ -12,18 +12,29 @@ class Request extends Component {
   static defaultProps = {
   };
 
-  constructor() {
-    super();
-    addXMLRequestCallback((args) => {
-      if (args.responseURL.indexOf('sockjs-node') === -1) {
-        console.log('heyo', args);
-      }
-    });
-  }
+  request = () => {
+    addRequestListener(this.requestCallback);
+    this.props.action()
+      .then(this.handleSuccess)
+      .catch(this.handleError);
+    removeRequestListener(this.requestCallback);
+  };
+
+  requestCallback = request => {
+    console.log(request);
+  };
+
+  handleSuccess = response => {
+    console.log('%cSuccess', 'color: green', response);
+  };
+
+  handleError = error => {
+    console.error(error);
+  };
 
   render() {
     return (
-      <div onClick={() => this.props.action()}>
+      <div onClick={this.request}>
         hello world
       </div>
     );
