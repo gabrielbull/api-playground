@@ -44,24 +44,29 @@ class Field extends Component {
     }
   }
 
+  componentDidMount() {
+    if (this.state.value) {
+      if (typeof this.props.onChange === 'function') {
+        this.props.onChange(this.state.value);
+      }
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.state.value) {
+    if (typeof nextProps.value !== 'undefined' && nextProps.value !== this.state.value) {
       this.setState({ value: nextProps.value });
     }
   }
 
   changeValue = () => {
-    let value;
-    if (value = prompt(this.props.name, this.state.value)) {
-      if (this.persistKey) {
-        localStorage[this.persistKey] = JSON.stringify(value);
-      }
-
-      this.setState({ value: value });
-      if (this.props.onChange) {
-        this.props.onChange(value);
-      }
+    let value = prompt(this.props.name, this.state.value);
+    if (!value) value = null;
+    if (this.persistKey) {
+      localStorage[this.persistKey] = JSON.stringify(value);
     }
+
+    this.setState({ value: value });
+    if (typeof this.props.onChange === 'function') this.props.onChange(value);
   };
 
   render() {

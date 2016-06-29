@@ -42,11 +42,17 @@ window.XMLHttpRequest.prototype.send = function () {
 const nextFetch = window.fetch;
 window.fetch = function () {
   return new Promise((resolve, reject) => {
-    window.XMLHttpRequest.requestCallbacks.forEach(callback => callback(arguments[0], arguments[1]));
+    window.XMLHttpRequest.requestCallbacks.forEach(callback => callback(arguments[0], { data: arguments[1].body, method: arguments[1].method }));
     nextFetch.apply(this, arguments)
       .then(response => {
-        window.XMLHttpRequest.successCallbacks.forEach(callback => callback(response));
-        resolve(response);
+        let responseClone = response.clone();
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          window.XMLHttpRequest.successCallbacks.forEach(callback => callback(responseClone));
+          resolve(response);
+        } else {
+          window.XMLHttpRequest.errorCallbacks.forEach(callback => callback(responseClone));
+          reject(response);
+        }
       })
       .catch(err => {
         window.XMLHttpRequest.errorCallbacks.forEach(callback => callback(err));
