@@ -9,14 +9,29 @@ const styles = {
   borderBottom: '1px solid rgba(255, 255, 255, .1)'
 };
 
+let id = 0;
+
 function ExtendComposedComponent(options, ComposedComponent) {
   class Component extends ComposedComponent {
     static contextTypes = {
       store: PropTypes.object
     };
 
+    static childContextTypes = {
+      playgroundComponent: PropTypes.number
+    };
+
+    getChildContext() {
+      return {
+        playgroundComponent: this.id
+      };
+    }
+
+    id;
+
     constructor(props, context, updater) {
       super(props, context, updater);
+      this.id = id = id + 1;
 
       try {
         this.state = JSON.parse(localStorage['component-state-' + functionName(ComposedComponent)]);

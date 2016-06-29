@@ -1,43 +1,63 @@
 import React, { Component, PropTypes } from 'react';
 import { addRequestListener, removeRequestListener } from './network';
+import Field from '../ui/field';
+
+const styles = {
+  fields: {
+    display: 'flex'
+  }
+};
 
 class Request extends Component {
   static propTypes = {
-    object: PropTypes.object,
-    boolean: PropTypes.bool,
-    number: PropTypes.number,
+    params: PropTypes.array,
     action: PropTypes.func.isRequired
   };
 
-  static defaultProps = {
+  static contextTypes = {
+    playgroundComponent: PropTypes.number
   };
 
   request = () => {
-    addRequestListener(this.requestCallback);
-    this.props.action()
-      .then(this.handleSuccess)
-      .catch(this.handleError);
-    removeRequestListener(this.requestCallback);
+    addRequestListener(this.handleRequest, this.handleSuccess, this.handleError);
+    this.props.action();
   };
 
-  requestCallback = request => {
-    console.log(request);
+  handleRequest = (url, {data, method}) => {
+    console.log(url, data, method);
   };
 
   handleSuccess = response => {
     console.log('%cSuccess', 'color: green', response);
+    removeRequestListener(this.handleRequest, this.handleSuccess, this.handleError);
   };
 
   handleError = error => {
-    console.error(error);
+    console.warn(error);
+    removeRequestListener(this.handleRequest, this.handleSuccess, this.handleError);
   };
 
   render() {
+    //onClick={this.request}
     return (
-      <div onClick={this.request}>
+      <div>
+        <div style={styles.fields}>
+          {this.renderParams()}
+        </div>
         hello world
       </div>
     );
+  }
+
+  renderParams() {
+    if (this.props.params) {
+      let children = [];
+      this.props.params.forEach(param => {
+        children.push(<Field key={param} name={param} persistKey={this.context.playgroundComponent + '.' + param}/>);
+      });
+      return children;
+    }
+    return null;
   }
 }
 

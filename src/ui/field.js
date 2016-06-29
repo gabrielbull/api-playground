@@ -20,12 +20,28 @@ class Field extends Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    persistKey: PropTypes.string
   };
 
   constructor(props, context, updater) {
     super(props, context, updater);
-    this.state = { value: props.value };
+    if (props.persistKey) {
+      this.persistKey = 'api-playground.' + props.persistKey;
+      try {
+        this.state = {
+          value: JSON.parse(localStorage[this.persistKey])
+        };
+      } catch (err) {
+        this.state = {
+          value: props.value
+        };
+      }
+    } else {
+      this.state = {
+        value: props.value
+      };
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -37,6 +53,10 @@ class Field extends Component {
   changeValue = () => {
     let value;
     if (value = prompt(this.props.name, this.state.value)) {
+      if (this.persistKey) {
+        localStorage[this.persistKey] = JSON.stringify(value);
+      }
+
       this.setState({ value: value });
       if (this.props.onChange) {
         this.props.onChange(value);
