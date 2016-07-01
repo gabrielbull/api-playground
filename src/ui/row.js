@@ -10,14 +10,13 @@ const styles = {
 
 class Row extends Component {
   static propTypes = {
-    color: PropTypes.string,
-    data: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    color: PropTypes.string
   };
 
   render() {
     return (
       <tr>
-        {this.renderData()}
+        {this.props.children}
       </tr>
     );
   }
@@ -34,7 +33,7 @@ class Row extends Component {
       finalData = this.props.data;
     }
 
-    const tdStyle = {...styles.td};
+    const tdStyle = { ...styles.td };
     if (this.props.color) {
       tdStyle['color'] = this.props.color;
     }

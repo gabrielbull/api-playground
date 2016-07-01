@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { addRequestListener, removeRequestListener } from './network';
 import Field from '../ui/field';
 import Loader from '../ui/loader';
-import Table, { Row } from '../ui/table';
+import Table, { Row, Column } from '../ui/table';
+import JsonViewer from '../ui/jsonViewer';
 
 const styles = {
   fields: {
@@ -34,7 +35,8 @@ class Request extends Component {
   };
 
   static contextTypes = {
-    playgroundComponent: PropTypes.number
+    playgroundComponent: PropTypes.number,
+    getConfig: PropTypes.func
   };
 
   params = {};
@@ -69,7 +71,7 @@ class Request extends Component {
     }, 250);
   };
 
-  handleRequest = (url, {data, method}) => {
+  handleRequest = (url, { data, method }) => {
     this.updateMethod(method);
     this.updateUrl(url);
     console.log(data);
@@ -135,6 +137,14 @@ class Request extends Component {
   }
 
   render() {
+    const config = typeof this.context.getConfig === 'function' ? this.context.getConfig() : {};
+
+    let url = this.state.url;
+    if (config.url) {
+      const re = new RegExp(`^${config.url}`);
+      url = url.replace(re, '');
+    }
+
     return (
       <div>
         <div style={styles.fields}>
@@ -151,7 +161,7 @@ class Request extends Component {
           {this.state.method}
         </span>
         <span style={styles.url}>
-          {this.state.url}
+          {url}
         </span>
         <div>
           <Table headers={['URL', 'Method', 'Status', 'Type', 'Time', 'Headers', 'Payload', 'Response' ]}>
@@ -181,10 +191,38 @@ class Request extends Component {
   }
 
   renderRows() {
+    const config = typeof this.context.getConfig === 'function' ? this.context.getConfig() : {};
+
     return this.state.rows.map((row, index) => {
       let color = '#eeeeee';
       if (row['status'] !== 200) color = '#ff0000';
-      return <Row key={index} data={row} color={color}/>;
+      return (
+        <Row key={index}>
+          {Object.keys(row).map(key => {
+            let value = row[key];
+            if (
+              typeof row[key] === 'string' &&
+              ((row[key].charAt(0) === '{' && row[key].charAt(row[key].length - 1) === '}') || (row[key].charAt(0) === '[' && row[key].charAt(row[key].length - 1) === ']'))
+            ) {
+              try {
+                value = <JsonViewer json={JSON.parse(row[key])}/>;
+              } catch (err) {
+                value = row[key];
+              }
+            } else if (key === 'url') {
+              if (config.url) {
+                const re = new RegExp(`^${config.url}`);
+                value = value.replace(re, '');
+              }
+            } else if (key === 'headers') {
+              let headers = {};
+              value.forEach((item, key) => headers[key] = item);
+              value = <JsonViewer json={headers}/>;
+            }
+            return (<Column key={key} style={{ color }}>{value}</Column>);
+          })}
+        </Row>
+      );
     });
   }
 }

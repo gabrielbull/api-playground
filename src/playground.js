@@ -63,7 +63,8 @@ class Playground extends Component {
 
   getChildContext() {
     return {
-      store: this.props.store
+      store: this.props.store,
+      getConfig: this.props.getConfig
     };
   }
 

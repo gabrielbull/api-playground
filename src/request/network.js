@@ -28,7 +28,7 @@ window.XMLHttpRequest.prototype.send = function () {
   this.onreadystatechange = () => {
     if (this.readyState === XMLHttpRequest.DONE) {
       if(this.status === 200){
-        window.XMLHttpRequest.successCallbacks.forEach(callback => callback(response));
+        window.XMLHttpRequest.successCallbacks.forEach(callback => callback());
       } else {
         window.XMLHttpRequest.errorCallbacks.forEach(callback => callback(new Error(this.statusText)));
       }

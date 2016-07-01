@@ -42,11 +42,12 @@ class HeaderView extends Component {
     const state = type ? <StateInfoView type={type} count={count}/> : '';
 
     return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        height: '20px'
-      }}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          height: '20px'
+        }}
       >
         <div
           style={{

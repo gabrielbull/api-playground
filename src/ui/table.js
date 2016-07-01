@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 
 export Row from './row';
+export Column from './column';
 
 const styles = {
   table: {
