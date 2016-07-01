@@ -24,7 +24,7 @@ const theme = {
 
 class JsonViewer extends Component {
   static propTypes = {
-    json: PropTypes.object,
+    json: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     expanded: PropTypes.bool
   };
 

@@ -71,6 +71,7 @@ class Request extends Component {
     if (localStorage[this.persistKey + '.rows']) {
       try {
         this.state.rows = JSON.parse(localStorage[this.persistKey + '.rows']);
+        if (!this.state.rows) this.state.rows = [];
       } catch (err) {
         this.state.rows = [];
       }
@@ -96,10 +97,13 @@ class Request extends Component {
     }, 250);
   };
 
-  handleRequest = (url, { data, method }) => {
+  handleRequest = (url, { data, method, headers }) => {
     this.updateMethod(method);
     this.updateUrl(url);
-    this.payload = data;
+
+    console.log(headers);
+    this.requestContent = data;
+    this.requestHeaders = headers;
   };
 
   handleSuccess = response => {
@@ -111,14 +115,15 @@ class Request extends Component {
           const headers = {};
           response.headers.forEach((item, key) => headers[key] = item);
           this.addRow({
-            url: response.url,
             method: this.state.method,
+            url: response.url,
             status: response.status,
             type: response.type,
             time: this.stopTimer(),
-            headers: headers,
-            payload: this.payload,
-            response: value
+            requestHeaders: this.requestHeaders,
+            requestContent: this.requestContent,
+            responseHeaders: headers,
+            responseContent: value
           });
         })
       } catch (err) {
@@ -133,28 +138,30 @@ class Request extends Component {
 
     if (response instanceof TypeError) {
       this.addRow({
-        url: this.state.url,
         method: this.state.method,
+        url: this.state.url,
         status: '(Failed)',
         type: '',
         time: this.stopTimer(),
-        headers: {},
-        payload: this.payload,
-        response: response.message
+        requestHeaders: this.requestHeaders,
+        requestContent: this.requestContent,
+        responseHeaders: {},
+        responseContent: response.message
       });
     } else if (response && response.status) {
       response.text().then(value => {
         const headers = {};
         response.headers.forEach((item, key) => headers[key] = item);
         this.addRow({
-          url: response.url,
           method: this.state.method,
+          url: response.url,
           status: response.status,
           type: response.type,
           time: this.stopTimer(),
-          headers: headers,
-          payload: this.payload,
-          response: value
+          requestHeaders: this.requestHeaders,
+          requestContent: this.requestContent,
+          responseHeaders: headers,
+          responseContent: value
         });
       })
     }
@@ -173,6 +180,7 @@ class Request extends Component {
     let rows = [ ...this.state.rows.slice(0, 2) ];
     this.setState({ rows });
     rows = [ row, ...this.state.rows ];
+    console.log(row);
     localStorage[this.persistKey + '.rows'] = JSON.stringify(rows);
     setTimeout(() => this.setState({ rows }), 250);
   };
@@ -225,7 +233,7 @@ class Request extends Component {
         </span>
         {paramRow}
         <div>
-          <Table headers={['URL', 'Method', 'Status', 'Type', 'Time', 'Headers', 'Payload', 'Response' ]}>
+          <Table headers={['Method', 'URL', 'Status', 'Type', 'Time', 'Request Headers', 'Request Content', 'Response Headers', 'Response Content' ]}>
             {this.renderRows()}
           </Table>
         </div>
@@ -263,7 +271,9 @@ class Request extends Component {
         <Row key={index}>
           {Object.keys(row).map(key => {
             let value = row[key];
-            if (
+            if (typeof value === 'object') {
+              value = <JsonViewer json={value}/>;
+            } else if (
               typeof row[key] === 'string' &&
               ((row[key].charAt(0) === '{' && row[key].charAt(row[key].length - 1) === '}') || (row[key].charAt(0) === '[' && row[key].charAt(row[key].length - 1) === ']'))
             ) {
@@ -277,8 +287,6 @@ class Request extends Component {
                 const re = new RegExp(`^${config.url}`);
                 value = value.replace(re, '');
               }
-            } else if (key === 'headers') {
-              value = <JsonViewer json={value}/>;
             }
             return (<Column key={key} style={{ color }}>{value}</Column>);
           })}

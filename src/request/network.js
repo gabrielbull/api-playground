@@ -42,7 +42,11 @@ window.XMLHttpRequest.prototype.send = function () {
 const nextFetch = window.fetch;
 window.fetch = function () {
   return new Promise((resolve, reject) => {
-    window.XMLHttpRequest.requestCallbacks.forEach(callback => callback(arguments[0], { data: arguments[1].body, method: arguments[1].method }));
+    window.XMLHttpRequest.requestCallbacks.forEach(callback => callback(arguments[0], {
+      data: arguments[1].body,
+      method: arguments[1].method,
+      headers: arguments[1].headers
+    }));
     nextFetch.apply(this, arguments)
       .then(response => {
         let responseClone = response.clone();
