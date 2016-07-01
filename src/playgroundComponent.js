@@ -5,7 +5,6 @@ import Actions from './ui/actions';
 
 const styles = {
   marginBottom: '20px',
-  paddingBottom: '20px',
   borderBottom: '1px solid rgba(255, 255, 255, .1)'
 };
 
@@ -54,11 +53,11 @@ function ExtendComposedComponent(options, ComposedComponent) {
 
     render() {
       let rendered = super.render();
-
+      let actions = this.actions ? <Actions actions={this.actions}/> : null;
       return (
         <div style={styles}>
           <HeaderView name={functionName(ComposedComponent)}>
-            <Actions actions={this.actions}/>
+            {actions}
           </HeaderView>
           <div style={{ marginLeft: '32px', marginTop: '14px', marginBottom: '4px' }}>
             {rendered}

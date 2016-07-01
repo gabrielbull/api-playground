@@ -25,7 +25,7 @@ const theme = {
 class JsonViewer extends Component {
   render() {
     return (
-      <JSONTree shouldExpandNode={false} data={this.props.json} theme={theme} isLightTheme={false}/>
+      <JSONTree shouldExpandNode={() => false} data={this.props.json} theme={theme} isLightTheme={false}/>
     );
   }
 }

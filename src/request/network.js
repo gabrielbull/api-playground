@@ -46,7 +46,7 @@ window.fetch = function () {
     nextFetch.apply(this, arguments)
       .then(response => {
         let responseClone = response.clone();
-        if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (response.status >= 200 && response.status < 300) {
           window.XMLHttpRequest.successCallbacks.forEach(callback => callback(responseClone));
           resolve(response);
         } else {

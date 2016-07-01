@@ -59,7 +59,8 @@ class Field extends Component {
   }
 
   changeValue = () => {
-    let value = prompt(this.props.name, this.state.value);
+    let value = prompt(this.props.name, this.state.value === null || this.props.type === 'password' ? '' : this.state.value);
+    if (value === null) return;
     if (!value) value = null;
     if (this.persistKey) {
       localStorage[this.persistKey] = JSON.stringify(value);
@@ -78,7 +79,7 @@ class Field extends Component {
       value = <span style={{ color: 'gray' }}>null</span>;
     } else {
       if (type === 'password') {
-        value = value.replace(/./g, '*');
+        value = value.replace(/./g, '•');
       }
       value = <span style={{ color: 'white' }}>{value}</span>;
     }

@@ -2,12 +2,18 @@ import React, { Component, PropTypes } from 'react';
 import { addRequestListener, removeRequestListener } from './network';
 import Field from '../ui/field';
 import Loader from '../ui/loader';
+import Label from '../ui/label';
 import Table, { Row, Column } from '../ui/table';
 import JsonViewer from '../ui/jsonViewer';
 
 const styles = {
+  container: {
+    paddingBottom: '20px'
+  },
+
   fields: {
-    display: 'flex'
+    display: 'flex',
+    marginTop: '20px'
   },
 
   run: {
@@ -28,6 +34,8 @@ const styles = {
   }
 };
 
+let id = 0;
+
 class Request extends Component {
   static propTypes = {
     params: PropTypes.array,
@@ -41,15 +49,25 @@ class Request extends Component {
 
   params = {};
 
+  id;
+
   constructor(props, context, updater) {
     super(props, context, updater);
-    this.persistKey = 'api-playground.' + context.playgroundComponent + '.request';
+    this.id = id = id + 1;
+    this.persistKey = 'api-playground.' + context.playgroundComponent + '.request.' + this.id;
     this.state = {
       method: localStorage[this.persistKey + '.method'],
       url: localStorage[this.persistKey + '.url'],
       showLoader: false,
       rows: []
     };
+    if (localStorage[this.persistKey + '.rows']) {
+      try {
+        this.state.rows = JSON.parse(localStorage[this.persistKey + '.rows']);
+      } catch (err) {
+        this.state.rows = [];
+      }
+    }
   }
 
   updateMethod = method => {
@@ -74,7 +92,6 @@ class Request extends Component {
   handleRequest = (url, { data, method }) => {
     this.updateMethod(method);
     this.updateUrl(url);
-    console.log(data);
     this.payload = data;
   };
 
@@ -82,7 +99,24 @@ class Request extends Component {
     removeRequestListener(this.handleRequest, this.handleSuccess, this.handleError);
     this.setState({ showLoader: false });
     if (response && response.status) {
-      console.log('%cSuccess', 'color: green', response);
+      try {
+        response.text().then(value => {
+          const headers = {};
+          response.headers.forEach((item, key) => headers[key] = item);
+          this.addRow({
+            url: response.url,
+            method: this.state.method,
+            status: response.status,
+            type: response.type,
+            time: this.stopTimer(),
+            headers: headers,
+            payload: this.payload,
+            response: value
+          });
+        })
+      } catch (err) {
+
+      }
     }
   };
 
@@ -103,13 +137,15 @@ class Request extends Component {
       });
     } else if (response && response.status) {
       response.text().then(value => {
+        const headers = {};
+        response.headers.forEach((item, key) => headers[key] = item);
         this.addRow({
           url: response.url,
           method: this.state.method,
           status: response.status,
           type: response.type,
           time: this.stopTimer(),
-          headers: response.headers,
+          headers: headers,
           payload: this.payload,
           response: value
         });
@@ -127,12 +163,18 @@ class Request extends Component {
   };
 
   addRow = row => {
-    this.setState({ rows: [row, ...this.state.rows] });
+    let rows = [ ...this.state.rows.slice(0, 2) ];
+    this.setState({ rows });
+    rows = [ row, ...this.state.rows ];
+    localStorage[this.persistKey + '.rows'] = JSON.stringify(rows);
+    setTimeout(() => this.setState({ rows }), 250);
   };
 
   getData() {
     const finalData = {};
-    this.props.params.forEach(param => finalData[param] = this.params[param]);
+    if (this.props.params) {
+      this.props.params.forEach(param => finalData[param] = this.params[param]);
+    }
     return finalData;
   }
 
@@ -140,16 +182,13 @@ class Request extends Component {
     const config = typeof this.context.getConfig === 'function' ? this.context.getConfig() : {};
 
     let url = this.state.url;
-    if (config.url) {
+    if (url && config.url) {
       const re = new RegExp(`^${config.url}`);
       url = url.replace(re, '');
     }
 
     return (
-      <div>
-        <div style={styles.fields}>
-          {this.renderParams()}
-        </div>
+      <div style={styles.container}>
         <a onClick={this.request} style={styles.run}>
           Run
           <svg x="0px" y="0px" width="5px" height="10px" viewBox="0 0 5 10" style={{ marginLeft: '4px' }}>
@@ -163,6 +202,10 @@ class Request extends Component {
         <span style={styles.url}>
           {url}
         </span>
+        <div style={styles.fields}>
+          <Label>Parameters</Label>
+          {this.renderParams()}
+        </div>
         <div>
           <Table headers={['URL', 'Method', 'Status', 'Type', 'Time', 'Headers', 'Payload', 'Response' ]}>
             {this.renderRows()}
@@ -176,9 +219,11 @@ class Request extends Component {
     if (this.props.params) {
       let children = [];
       this.props.params.forEach(param => {
+        let type = param.indexOf('password') !== -1 ? 'password' : null;
         children.push(
           <Field
             key={param}
+            type={type}
             onChange={value => this.params[param] = value}
             name={param}
             persistKey={this.context.playgroundComponent + '.' + param}
@@ -215,9 +260,7 @@ class Request extends Component {
                 value = value.replace(re, '');
               }
             } else if (key === 'headers') {
-              let headers = {};
-              value.forEach((item, key) => headers[key] = item);
-              value = <JsonViewer json={headers}/>;
+              value = <JsonViewer json={value}/>;
             }
             return (<Column key={key} style={{ color }}>{value}</Column>);
           })}
