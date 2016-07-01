@@ -25,7 +25,7 @@ const styles = {
 
   run: {
     color: '#a8ff00',
-    cursor: 'default'
+    cursor: 'pointer'
   },
 
   method: {

@@ -1,7 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes, Children, cloneElement } from 'react';
 import './request/network';
 import Field from './ui/field';
+import Tabs, { Tab } from './main/tabs/tabs';
 import Action from './ui/action';
+import { functionName } from './helper';
 
 document.body.innerHTML = `
   <div id="main"></div>
@@ -25,7 +27,6 @@ const styles = {
   },
 
   itemContainer: {
-    borderTop: '1px solid rgba(255, 255, 255, .1)',
     paddingTop: '20px'
   }
 };
@@ -34,7 +35,8 @@ class Playground extends Component {
   static childContextTypes = {
     store: PropTypes.object,
     getConfig: PropTypes.func,
-    changeConfig: PropTypes.func
+    changeConfig: PropTypes.func,
+    playground: PropTypes.object
   };
 
   constructor(...args) {
@@ -64,7 +66,8 @@ class Playground extends Component {
   getChildContext() {
     return {
       store: this.props.store,
-      getConfig: this.props.getConfig
+      getConfig: this.props.getConfig,
+      playground: this
     };
   }
 
@@ -112,11 +115,48 @@ class Playground extends Component {
           <Action color="red" name="Reset" action={this.reset}/>
         </div>
 
+        {this.renderTabs()}
+
         <div style={styles.itemContainer}>
-          {this.props.children}
+          {this.renderContent()}
         </div>
       </div>
     );
+  }
+
+  renderContent() {
+    return Children.map(this.props.children, child => {
+      const name = functionName(child.type.prototype.__proto__.constructor);
+      if (!this.state.selected) this.state.selected = name;
+      return name === this.state.selected ? cloneElement(child, { hide: false, name }) : cloneElement(child, { hide: true, name });
+    });
+  }
+
+  renderTabs() {
+    return (
+      <Tabs>
+        {Children.map(this.props.children, child => {
+          const name = functionName(child.type.prototype.__proto__.constructor);
+          if (!this.state.selected) this.state.selected = name;
+          if (this.state.selected === name && this.state.markUpdated === name) {
+            this.state.markUpdated = null;
+          }
+          return (
+            <Tab
+              selected={this.state.selected === name}
+              markUpdated={this.state.markUpdated === name}
+              onClick={() => this.setState({ selected: name })}
+            >
+              {name}
+            </Tab>
+          );
+        })}
+      </Tabs>
+    );
+  }
+
+  markUpdate(name) {
+    this.setState({ markUpdated: name });
   }
 }
 

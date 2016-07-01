@@ -1,28 +1,35 @@
 import React, { PropTypes } from 'react';
 import { functionName } from './helper';
-import HeaderView from './views/headerView';
-import Actions from './ui/actions';
 
 const styles = {
+  marginLeft: '16px',
+  marginRight: '16px',
+  marginTop: '14px',
   marginBottom: '20px',
-  borderBottom: '1px solid rgba(255, 255, 255, .1)'
+  borderBottom: '1px solid #222'
 };
 
 let id = 0;
 
 function ExtendComposedComponent(options, ComposedComponent) {
   class Component extends ComposedComponent {
+    static propTypes = {
+      name: PropTypes.string
+    };
+
     static contextTypes = {
       store: PropTypes.object
     };
 
     static childContextTypes = {
-      playgroundComponent: PropTypes.number
+      playgroundComponent: PropTypes.number,
+      name: PropTypes.string
     };
 
     getChildContext() {
       return {
-        playgroundComponent: this.id
+        playgroundComponent: this.id,
+        name: this.props.name
       };
     }
 
@@ -53,15 +60,13 @@ function ExtendComposedComponent(options, ComposedComponent) {
 
     render() {
       let rendered = super.render();
-      let actions = this.actions ? <Actions actions={this.actions}/> : null;
+      let componentStyle = { ...styles };
+      if (this.props.hide) componentStyle.display = 'none';
+      else componentStyle.display = 'block';
+
       return (
-        <div style={styles}>
-          <HeaderView name={functionName(ComposedComponent)}>
-            {actions}
-          </HeaderView>
-          <div style={{ marginLeft: '32px', marginTop: '14px', marginBottom: '4px' }}>
-            {rendered}
-          </div>
+        <div style={componentStyle}>
+          {rendered}
         </div>
       );
     }

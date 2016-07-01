@@ -1,5 +1,5 @@
+import React, { Component, PropTypes } from 'react';
 import JSONTree from 'react-json-tree'
-import React, { Component } from 'react';
 
 const theme = {
   scheme: 'monokai',
@@ -23,9 +23,18 @@ const theme = {
 };
 
 class JsonViewer extends Component {
+  static propTypes = {
+    json: PropTypes.object,
+    expanded: PropTypes.bool
+  };
+
+  static defaultProps = {
+    expanded: false
+  };
+
   render() {
     return (
-      <JSONTree shouldExpandNode={() => false} data={this.props.json} theme={theme} isLightTheme={false}/>
+      <JSONTree shouldExpandNode={() => this.props.expanded} data={this.props.json ? this.props.json : undefined} theme={theme} isLightTheme={false}/>
     );
   }
 }
