@@ -8,7 +8,14 @@ import JsonViewer from '../ui/jsonViewer';
 
 const styles = {
   container: {
-    paddingBottom: '20px'
+    paddingBottom: '20px',
+    paddingTop: '20px',
+    borderTop: '1px solid #222'
+  },
+
+  name: {
+    display: 'inline-block',
+    width: '200px'
   },
 
   fields: {
@@ -187,8 +194,22 @@ class Request extends Component {
       url = url.replace(re, '');
     }
 
+    let params = this.renderParams();
+    let paramRow;
+    if (params) {
+      paramRow = (
+        <div style={styles.fields}>
+          <Label>Parameters</Label>
+          {this.renderParams()}
+        </div>
+      );
+    }
+
     return (
       <div style={styles.container}>
+        <span style={styles.name}>
+          {this.props.name}
+        </span>
         <a onClick={this.request} style={styles.run}>
           Run
           <svg x="0px" y="0px" width="5px" height="10px" viewBox="0 0 5 10" style={{ marginLeft: '4px' }}>
@@ -202,10 +223,7 @@ class Request extends Component {
         <span style={styles.url}>
           {url}
         </span>
-        <div style={styles.fields}>
-          <Label>Parameters</Label>
-          {this.renderParams()}
-        </div>
+        {paramRow}
         <div>
           <Table headers={['URL', 'Method', 'Status', 'Type', 'Time', 'Headers', 'Payload', 'Response' ]}>
             {this.renderRows()}
