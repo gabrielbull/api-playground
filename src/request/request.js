@@ -101,7 +101,6 @@ class Request extends Component {
     this.updateMethod(method);
     this.updateUrl(url);
 
-    console.log(headers);
     this.requestContent = data;
     this.requestHeaders = headers;
   };
@@ -180,7 +179,6 @@ class Request extends Component {
     let rows = [ ...this.state.rows.slice(0, 2) ];
     this.setState({ rows });
     rows = [ row, ...this.state.rows ];
-    console.log(row);
     localStorage[this.persistKey + '.rows'] = JSON.stringify(rows);
     setTimeout(() => this.setState({ rows }), 250);
   };
