@@ -42,7 +42,7 @@ class State extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (!deepEqual(prevState.data, this.state.data)) {
-      this.context.playground.markUpdate(this.context.name);
+      this.context.playground.markUpdated(this.context.name);
     }
   }
 

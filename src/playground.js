@@ -54,6 +54,8 @@ class Playground extends Component {
     } catch (err) {
     }
 
+    this.state.markUpdated = [];
+
     for (let prop in defaultConfig) {
       if (defaultConfig.hasOwnProperty(prop)) {
         if (defaultConfig[prop] !== this.state[prop] && typeof this.props.changeConfig === 'function') {
@@ -138,13 +140,13 @@ class Playground extends Component {
         {Children.map(this.props.children, child => {
           const name = functionName(child.type.prototype.__proto__.constructor);
           if (!this.state.selected) this.state.selected = name;
-          if (this.state.selected === name && this.state.markUpdated === name) {
-            this.state.markUpdated = null;
+          if (this.state.selected === name && this.state.markUpdated.indexOf(name) !== -1) {
+            this.unmarkUpdated(name);
           }
           return (
             <Tab
               selected={this.state.selected === name}
-              markUpdated={this.state.markUpdated === name}
+              markUpdated={this.state.markUpdated.indexOf(name) !== -1}
               onClick={() => this.setState({ selected: name })}
             >
               {name}
@@ -155,8 +157,12 @@ class Playground extends Component {
     );
   }
 
-  markUpdate(name) {
-    this.setState({ markUpdated: name });
+  unmarkUpdated(name) {
+    this.setState({ markUpdated: this.state.markUpdated.filter(value => value !== name) });
+  }
+
+  markUpdated(name) {
+    this.setState({ markUpdated: [ ...this.state.markUpdated, name ] });
   }
 }
 
