@@ -34,7 +34,12 @@ class JsonViewer extends Component {
 
   render() {
     return (
-      <JSONTree shouldExpandNode={() => this.props.expanded} data={this.props.json ? this.props.json : undefined} theme={theme} isLightTheme={false}/>
+      <JSONTree
+        shouldExpandNode={() => this.props.expanded}
+        data={this.props.json ? this.props.json : undefined}
+        theme={theme}
+        isLightTheme={false}
+      />
     );
   }
 }
