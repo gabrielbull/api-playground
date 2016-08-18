@@ -1,8 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes, cloneElement } from 'react';
 import { addRequestListener, removeRequestListener } from './network';
 import Field from '../ui/field';
 import Loader from '../ui/loader';
 import Label from '../ui/label';
+import RemoveButton from '../ui/buttons/removeButton';
 import Table, { Row, Column } from '../ui/table';
 import JsonViewer from '../ui/jsonViewer';
 
@@ -34,11 +35,6 @@ const styles = {
     marginTop: '20px'
   },
 
-  reset: {
-    color: '#ff3900',
-    cursor: 'pointer'
-  },
-
   run: {
     color: '#a8ff00',
     marginLeft: '20px',
@@ -62,7 +58,7 @@ let id = 0;
 
 class Request extends Component {
   static propTypes = {
-    params: PropTypes.array,
+    params: PropTypes.oneOfType([PropTypes.array, PropTypes.element]),
     action: PropTypes.func.isRequired
   };
 
@@ -93,6 +89,9 @@ class Request extends Component {
       } catch (err) {
         this.state.rows = [];
       }
+    }
+    if (props.params && props.params.type) {
+      this._structData = {};
     }
   }
 
@@ -217,6 +216,7 @@ class Request extends Component {
   };
 
   getData() {
+    if (this._structData) return this._structData;
     const finalData = {};
     if (this.props.params) {
       this.props.params.forEach(param => finalData[param] = this.params[param]);
@@ -278,17 +278,7 @@ class Request extends Component {
             {url}
           </span>
           <div style={styles.actions}>
-            <a onClick={this.reset} style={styles.reset}>
-              Reset
-              <svg x="0px" y="0px" width="10px" height="10px" viewBox="0 0 10 10" style={{ marginLeft: '4px' }}>
-                <path
-                  fill="#ff3900"
-                  d="M6.8,5l3.1-3.1c0.2-0.2,0.2-0.5,0-0.7L8.8,0.1C8.6,0,8.3,0,8.1,0.1
-                  L5,3.2L1.9,0.1C1.7,0,1.4,0,1.2,0.1L0.1,1.2C0,1.4,0,1.7,0.1,1.9L3.2,5L0.1,8.1C0,8.3,0,8.6,0.1,8.8l1.1,1.1c0.2,0.2,0.5,0.2,0.7,0
-                  L5,6.8l3.1,3.1c0.2,0.2,0.5,0.2,0.7,0l1.1-1.1c0.2-0.2,0.2-0.5,0-0.7L6.8,5z"
-                />
-              </svg>
-            </a>
+            <RemoveButton onClick={this.reset}>Reset</RemoveButton>
             <a onClick={this.request} style={styles.run}>
               Run
               <svg x="0px" y="0px" width="5px" height="10px" viewBox="0 0 5 10" style={{ marginLeft: '4px' }}>
@@ -307,8 +297,18 @@ class Request extends Component {
     );
   }
 
+  handleChange = value => {
+    this._structData = value;
+  };
+
   renderParams() {
     if (this.props.params) {
+      if (this.props.params.type) return cloneElement(this.props.params, {
+        ...this.props.params.props,
+        onChange: this.handleChange,
+        persistKey: this.persistKey
+      });
+
       let children = [];
       this.props.params.forEach(param => {
         let type = param.indexOf('password') !== -1 ? 'password' : null;

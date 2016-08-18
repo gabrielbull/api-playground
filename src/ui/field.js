@@ -71,7 +71,7 @@ class Field extends Component {
   };
 
   render() {
-    let { value, type, name } = this.props;
+    let { value, type, style, name } = this.props;
 
     value = this.state.value;
 
@@ -86,7 +86,7 @@ class Field extends Component {
 
     return (
       <div
-        style={styles}
+        style={{ ...styles, ...style }}
         onClick={this.changeValue}
       >
         <span style={{ color: 'gray', marginRight: '6px' }}>

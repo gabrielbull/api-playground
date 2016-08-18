@@ -6,3 +6,5 @@ export { default as Ui } from './ui/ui';
 export Request from './request/request';
 export State from './state/state';
 export { logger } from './logger';
+export { default as Struct } from './struct/struct';
+export { default as StructTypes } from './struct/types';
